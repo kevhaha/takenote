@@ -1,10 +1,27 @@
 import React from 'react';
+import NoteView from './NoteView.jsx';
 
-const Notes = () => {
-  return (
-    <div>
-      <h1>My Notes</h1>
-        <div className="notes-list">
+class Notes extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+    };
+  }
+
+  render () {
+    return (
+      <div className="notes-list">
+        <h1>My Notes</h1>
+        {this.props.notes.map((note, key) =>
+        <NoteView key={key} note={note} selected={this.props.selected}/>)}
+      </div>
+    )
+  }
+}
+
+export default Notes;
+
+{/* <div className="notes-list">
           <div className="note">
             <div className="note-title"><h3>Defenestrations of Prague</h3></div>
             <div className="note-category"><h4>History</h4></div>
@@ -25,9 +42,4 @@ const Notes = () => {
             <div className="note-category"><h4>History</h4></div>
             <div className="note-desc">A 1979 incident in which US President Jimmy Carter was attacked by a giant swamp rabbit.</div>
           </div>
-        </div>
-    </div>
-  )
-}
-
-export default Notes;
+        </div> */}

@@ -1,6 +1,7 @@
 import React from 'react';
 import Notes from './components/Notes.jsx';
-import AddNote from './components/AddNote.jsx'
+import AddNote from './components/AddNote.jsx';
+const axios = require('axios');
 
 class App extends React.Component {
   constructor(props){
@@ -9,19 +10,59 @@ class App extends React.Component {
       page: 'list',
       notes: []
     };
+    this.selected = this.selected.bind(this);
+    this.changePage = this.changePage.bind(this);
+    this.selected = this.selected.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.allNotes = this.allNotes.bind(this);
+    this.addNote = this.addNote.bind(this);
   }
 
-  changePage(page){
-    this.setState({
-      page: page
+  componentDidMount() {
+    axios.get('/takenote')
+    .then((response) => {
+      // console.log(response.data);
+      this.setState({notes: response.data})
     })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+
+  addNote(note){
+    // console.log('this is addnote:', note);
+    axios.post('/takenote', {
+      data: note
+    })
+    .then((response) => {
+      // console.log(response)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+
+  selected(note){
+    var selected = this.state.notes.filter((value) => value.title === note);
+    this.setState({notes: selected});
+  }
+
+  changePage(pg){
+    this.setState({
+      page: pg
+    })
+  }
+
+  allNotes(){
+    this.changePage('list');
+    this.componentDidMount();
   }
 
   pageRouter(){
     if(this.state.page === 'list'){
-      return <Notes />
+      return <Notes notes={this.state.notes} selected={this.selected}/>
     } else if (this.state.page === 'newNote'){
-      return <AddNote/>
+      return <AddNote add={this.addNote}/>
     }
   }
 
@@ -37,7 +78,7 @@ class App extends React.Component {
           <span className={this.state.page === 'list'
             ? 'nav-entry-selected button'
             : 'nav-entry-unselected button'}
-            onClick={() => {this.changePage('list')}}>
+            onClick={this.allNotes}>
             All Notes
           </span>
           <span className={this.state.page === 'newNote'
